@@ -1,38 +1,37 @@
-//! # Bitcoin Cash Address Library
+//! Codec
 //!
 //! A simple library providing an `Address` struct enabling
-//! encoding/decoding of Bitcoin Cash addresses.
+//! encoding/decoding of EARTH addresses.
 //!
-//! ```
-//! use bitcoincash_addr::{Address, Network, Scheme};
+//! ```rust
+//! use codec::{Address, Network, Scheme};
 //!
 //! fn main() {
-//!     // Decode base58 address
-//!     let legacy_addr = "1NM2HFXin4cEQRBLjkNZAS98qLX9JKzjKn";
-//!     let mut addr = Address::decode(legacy_addr).unwrap();
+//! // Decode base58 address
+//! let legacy_addr: &str = "1CM18hbqJzCnM8CaxaNQHxJcnkcYbLV5Gw";
+//! let mut addr = Address::decode(legacy_addr).unwrap();
 //!
-//!     // Change the base58 address to a test network cashaddr
-//!     addr.network = Network::Test;
-//!     addr.scheme = Scheme::CashAddr;
+//! // Change the base58 address to a test network earth address
+//! addr.network = Network::Test;
+//! addr.scheme = Scheme::Earth;
 //!
-//!     // Encode cashaddr
-//!     let cashaddr_str = addr.encode().unwrap();
+//! // Encode earth address
+//! let earth_address: String = addr.encode().unwrap();
 //!
-//!     // bchtest:qr4zgpuznfg923ntyauyeh5v7333v72xhum2dsdgfh
-//!     println!("{}", cashaddr_str);
+//! println!("{:#?}", earth_address);
+//! // earthtest:qp78r5zdgr53xszxlycksftf95wcv5a8q5khw5038k
 //! }
-//!
 //! ```
 //!
 
 mod base58;
 mod cashaddr;
-mod earthaddr;
+mod earth;
 mod errors;
 
 pub use base58::Base58Codec;
 pub use cashaddr::CashAddrCodec;
-pub use earthaddr::EarthCodec;
+pub use earth::EarthCodec;
 pub use errors::*;
 
 /// Bitcoin Networks
@@ -53,7 +52,7 @@ pub enum Scheme {
     Base58,
     /// CashAddress encoding
     CashAddr,
-    /// Earth encoding
+    /// Earth Address encoding
     Earth,
 }
 
@@ -81,12 +80,12 @@ pub struct Address {
 }
 
 /// Creates an empty `Address` struct, with the `body` bytes the empty vector,
-/// `Scheme::Earth`, `HashType::Key`, and `Network::Main`.
+/// `Scheme::CashAddr`, `HashType::Key`, and `Network::Main`.
 impl Default for Address {
     fn default() -> Self {
         Address {
             body: vec![],
-            scheme: Scheme::Earth,
+            scheme: Scheme::CashAddr,
             hash_type: HashType::Key,
             network: Network::Main,
         }
@@ -118,18 +117,18 @@ impl Address {
     /// Attempt to convert the raw address bytes to a string
     pub fn encode(&self) -> Result<String, AddressError> {
         match self.scheme {
-            Scheme::Earth => EarthCodec::encode(
-                &self.body,
-                self.hash_type.to_owned(),
-                self.network.to_owned(),
-            )
-            .map_err(AddressError::Earth),
             Scheme::CashAddr => CashAddrCodec::encode(
                 &self.body,
                 self.hash_type.to_owned(),
                 self.network.to_owned(),
             )
             .map_err(AddressError::CashAddr),
+            Scheme::Earth => EarthCodec::encode(
+                &self.body,
+                self.hash_type.to_owned(),
+                self.network.to_owned(),
+            )
+            .map_err(AddressError::Earth),
             Scheme::Base58 => Base58Codec::encode(
                 &self.body,
                 self.hash_type.to_owned(),
