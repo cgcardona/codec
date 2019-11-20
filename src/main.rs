@@ -1,25 +1,25 @@
-//! # Bitcoin Cash Address Library
+//! Codec
 //!
 //! A simple library providing an `Address` struct enabling
-//! encoding/decoding of Bitcoin Cash addresses.
+//! encoding/decoding of EARTH addresses.
 //!
 //! ```
-//! use bitcoincash_addr::{Address, Network, Scheme};
+//! use codec::{Address, Network, Scheme};
 //!
 //! fn main() {
-//!     // Decode base58 address
-//!     let legacy_addr = "1NM2HFXin4cEQRBLjkNZAS98qLX9JKzjKn";
+//!     // Decode address
+//!     let legacy_addr: &str = "1NM2HFXin4cEQRBLjkNZAS98qLX9JKzjKn";
 //!     let mut addr = Address::decode(legacy_addr).unwrap();
 //!
-//!     // Change the base58 address to a test network cashaddr
+//!     // Change the base58 address to a test network address
 //!     addr.network = Network::Test;
-//!     addr.scheme = Scheme::CashAddr;
+//!     addr.scheme = Scheme::Earth;
 //!
-//!     // Encode cashaddr
-//!     let cashaddr_str = addr.encode().unwrap();
+//!     // Encode earthaddr
+//!     let earthaddr_str = addr.encode().unwrap();
 //!
-//!     // bchtest:qr4zgpuznfg923ntyauyeh5v7333v72xhum2dsdgfh
-//!     println!("{}", cashaddr_str);
+//!     // earthtest:qr4zgpuznfg923ntyauyeh5v7333v72xhum2dsdgfh
+//!     println!("{}", earthaddr_str);
 //! }
 //!
 //! ```
@@ -32,7 +32,7 @@ mod errors;
 
 pub use base58::Base58Codec;
 pub use cashaddr::CashAddrCodec;
-pub use earthaddr::EarthAddrCodec;
+pub use earthaddr::EarthCodec;
 pub use errors::*;
 
 /// Bitcoin Networks
@@ -124,12 +124,12 @@ impl Address {
                 self.network.to_owned(),
             )
             .map_err(AddressError::CashAddr),
-            Scheme::EarthAddr => EarthAddrCodec::encode(
+            Scheme::EarthAddr => EarthCodec::encode(
                 &self.body,
                 self.hash_type.to_owned(),
                 self.network.to_owned(),
             )
-            .map_err(AddressError::EarthAddr),
+            .map_err(AddressError::Earth),
             Scheme::Base58 => Base58Codec::encode(
                 &self.body,
                 self.hash_type.to_owned(),

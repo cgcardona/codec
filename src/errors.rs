@@ -94,9 +94,9 @@ impl Error for CashAddrError {
     }
 }
 
-/// Error concerning encoding/decoding of earthaddrs
+/// Error concerning encoding/decoding of earth addresses
 #[derive(Debug, PartialEq, Eq, Clone)]
-pub enum EarthAddrError {
+pub enum EarthError {
     /// Invalid length (length)
     InvalidLength(usize),
     /// Zero or multiple prefixes
@@ -113,35 +113,35 @@ pub enum EarthAddrError {
     MixedCase,
 }
 
-impl fmt::Display for EarthAddrError {
+impl fmt::Display for EarthError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            EarthAddrError::ChecksumFailed(actual) => {
+            EarthError::ChecksumFailed(actual) => {
                 write!(f, "invalid checksum (actual {} != 0)", actual)
             }
-            EarthAddrError::InvalidChar(index) => write!(f, "invalid char ({})", index),
-            EarthAddrError::NoPrefix => write!(f, "zero or multiple prefixes"),
-            EarthAddrError::MixedCase => write!(f, "mixed case string"),
-            EarthAddrError::InvalidVersion(c) => write!(f, "invalid version byte ({})", c),
-            EarthAddrError::InvalidPrefix(prefix) => write!(f, "invalid prefix ({})", prefix),
-            EarthAddrError::InvalidLength(length) => write!(f, "invalid length ({})", length),
+            EarthError::InvalidChar(index) => write!(f, "invalid char ({})", index),
+            EarthError::NoPrefix => write!(f, "zero or multiple prefixes"),
+            EarthError::MixedCase => write!(f, "mixed case string"),
+            EarthError::InvalidVersion(c) => write!(f, "invalid version byte ({})", c),
+            EarthError::InvalidPrefix(prefix) => write!(f, "invalid prefix ({})", prefix),
+            EarthError::InvalidLength(length) => write!(f, "invalid length ({})", length),
         }
     }
 }
 
-impl Error for EarthAddrError {
+impl Error for EarthError {
     fn cause(&self) -> Option<&dyn Error> {
         None
     }
     fn description(&self) -> &str {
         match *self {
-            EarthAddrError::ChecksumFailed { .. } => "invalid checksum",
-            EarthAddrError::InvalidChar(_) => "invalid char",
-            EarthAddrError::NoPrefix => "zero or multiple prefixes",
-            EarthAddrError::MixedCase => "mixed case string",
-            EarthAddrError::InvalidVersion(_) => "invalid version byte",
-            EarthAddrError::InvalidPrefix(_) => "invalid prefix",
-            EarthAddrError::InvalidLength(_) => "invalid length",
+            EarthError::ChecksumFailed { .. } => "invalid checksum",
+            EarthError::InvalidChar(_) => "invalid char",
+            EarthError::NoPrefix => "zero or multiple prefixes",
+            EarthError::MixedCase => "mixed case string",
+            EarthError::InvalidVersion(_) => "invalid version byte",
+            EarthError::InvalidPrefix(_) => "invalid prefix",
+            EarthError::InvalidLength(_) => "invalid length",
         }
     }
 }
@@ -154,7 +154,7 @@ pub enum AddressError {
     /// CashAddr error
     CashAddr(CashAddrError),
     /// EarthAddr error
-    EarthAddr(EarthAddrError),
+    Earth(EarthError),
 }
 
 impl From<Base58Error> for AddressError {
@@ -174,7 +174,7 @@ impl fmt::Display for AddressError {
         match *self {
             AddressError::Base58(ref e) => write!(f, "base58 error: {}", e),
             AddressError::CashAddr(ref e) => write!(f, "cashaddr error: {}", e),
-            AddressError::EarthAddr(ref e) => write!(f, "earthaddr error: {}", e),
+            AddressError::Earth(ref e) => write!(f, "earthaddr error: {}", e),
         }
     }
 }
@@ -184,7 +184,7 @@ impl Error for AddressError {
         match *self {
             AddressError::Base58(ref e) => Some(e),
             AddressError::CashAddr(ref e) => Some(e),
-            AddressError::EarthAddr(ref e) => Some(e),
+            AddressError::Earth(ref e) => Some(e),
         }
     }
 
@@ -192,7 +192,7 @@ impl Error for AddressError {
         match *self {
             AddressError::Base58(_) => "base58 error",
             AddressError::CashAddr(_) => "cashaddr error",
-            AddressError::EarthAddr(_) => "earthaddr error",
+            AddressError::Earth(_) => "earthaddr error",
         }
     }
 }

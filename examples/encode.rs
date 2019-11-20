@@ -1,4 +1,4 @@
-use bitcoincash_addr::Address;
+use codec::Address;
 
 fn main() {
     // Raw hash160 bytes

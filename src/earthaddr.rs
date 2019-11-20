@@ -112,11 +112,11 @@ fn convert_bits(data: &[u8], inbits: u8, outbits: u8, pad: bool) -> Vec<u8> {
     ret
 }
 
-/// Codec allowing the encoding and decoding of earthaddrs
-pub struct EarthAddrCodec;
+/// Codec allowing the encoding and decoding of earth addresses
+pub struct EarthCodec;
 
-impl AddressCodec for EarthAddrCodec {
-    type Error = EarthAddrError;
+impl AddressCodec for EarthCodec {
+    type Error = EarthError;
     fn encode(raw: &[u8], hash_type: HashType, network: Network) -> Result<String, Self::Error> {
         // Calculate version byte
         let hash_flag = match hash_type {
@@ -133,7 +133,7 @@ impl AddressCodec for EarthAddrCodec {
             48 => version_byte_flags::SIZE_384,
             56 => version_byte_flags::SIZE_448,
             64 => version_byte_flags::SIZE_512,
-            _ => return Err(EarthAddrError::InvalidLength(length).into()),
+            _ => return Err(EarthError::InvalidLength(length).into()),
         } | hash_flag;
 
         // Get prefix
@@ -175,7 +175,7 @@ impl AddressCodec for EarthAddrCodec {
         // Delimit and extract prefix
         let parts: Vec<&str> = addr_str.split(':').collect();
         if parts.len() != 2 {
-            return Err(EarthAddrError::NoPrefix.into());
+            return Err(EarthError::NoPrefix.into());
         }
         let prefix = parts[0];
         let payload_str = parts[1];
@@ -185,7 +185,7 @@ impl AddressCodec for EarthAddrCodec {
             MAINNET_PREFIX => Network::Main,
             TESTNET_PREFIX => Network::Test,
             REGNET_PREFIX => Network::Regtest,
-            _ => return Err(EarthAddrError::InvalidPrefix(prefix.to_string()).into()),
+            _ => return Err(EarthError::InvalidPrefix(prefix.to_string()).into()),
         };
 
         // Do some sanity checks on the string
@@ -193,24 +193,24 @@ impl AddressCodec for EarthAddrCodec {
         if let Some(first_char) = payload_chars.next() {
             if first_char.is_lowercase() {
                 if payload_chars.any(|c| c.is_uppercase()) {
-                    return Err(EarthAddrError::MixedCase.into());
+                    return Err(EarthError::MixedCase.into());
                 }
             } else if payload_chars.any(|c| c.is_lowercase()) {
-                return Err(EarthAddrError::MixedCase.into());
+                return Err(EarthError::MixedCase.into());
             }
         } else {
-            return Err(EarthAddrError::InvalidLength(0).into());
+            return Err(EarthError::InvalidLength(0).into());
         }
 
         // Decode payload to 5 bit array
         let payload_chars = payload_str.chars(); // Reintialize iterator here
-        let payload_5_bits: Result<Vec<u8>, EarthAddrError> = payload_chars
+        let payload_5_bits: Result<Vec<u8>, EarthError> = payload_chars
             .map(|c| {
                 let i = c as usize;
                 if let Some(Some(d)) = CHARSET_REV.get(i) {
                     Ok(*d as u8)
                 } else {
-                    Err(EarthAddrError::InvalidChar(c))
+                    Err(EarthError::InvalidChar(c))
                 }
             })
             .collect();
@@ -219,7 +219,7 @@ impl AddressCodec for EarthAddrCodec {
         // Verify the checksum
         let checksum = polymod(&[&expand_prefix(prefix), &payload_5_bits[..]].concat());
         if checksum != 0 {
-            return Err(EarthAddrError::ChecksumFailed(checksum).into());
+            return Err(EarthError::ChecksumFailed(checksum).into());
         }
 
         // Convert from 5 bit array to byte array
@@ -242,7 +242,7 @@ impl AddressCodec for EarthAddrCodec {
             || (version_size == version_byte_flags::SIZE_448 && body_len != 56)
             || (version_size == version_byte_flags::SIZE_512 && body_len != 64)
         {
-            return Err(EarthAddrError::InvalidLength(body_len).into());
+            return Err(EarthError::InvalidLength(body_len).into());
         }
 
         // Extract the hash type and return
@@ -252,7 +252,7 @@ impl AddressCodec for EarthAddrCodec {
         } else if version_type == version_byte_flags::TYPE_P2SH {
             HashType::Script
         } else {
-            return Err(EarthAddrError::InvalidVersion(version).into());
+            return Err(EarthError::InvalidVersion(version).into());
         };
 
         Ok(Address {

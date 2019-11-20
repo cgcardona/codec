@@ -27,10 +27,12 @@
 
 mod base58;
 mod cashaddr;
+mod earthaddr;
 mod errors;
 
 pub use base58::Base58Codec;
 pub use cashaddr::CashAddrCodec;
+pub use earthaddr::EarthCodec;
 pub use errors::*;
 
 /// Bitcoin Networks
@@ -51,6 +53,8 @@ pub enum Scheme {
     Base58,
     /// CashAddress encoding
     CashAddr,
+    /// Earth encoding
+    Earth,
 }
 
 /// Intepretation of the Hash160 bytes
@@ -77,12 +81,12 @@ pub struct Address {
 }
 
 /// Creates an empty `Address` struct, with the `body` bytes the empty vector,
-/// `Scheme::CashAddr`, `HashType::Key`, and `Network::Main`.
+/// `Scheme::Earth`, `HashType::Key`, and `Network::Main`.
 impl Default for Address {
     fn default() -> Self {
         Address {
             body: vec![],
-            scheme: Scheme::CashAddr,
+            scheme: Scheme::Earth,
             hash_type: HashType::Key,
             network: Network::Main,
         }
@@ -114,6 +118,12 @@ impl Address {
     /// Attempt to convert the raw address bytes to a string
     pub fn encode(&self) -> Result<String, AddressError> {
         match self.scheme {
+            Scheme::Earth => EarthCodec::encode(
+                &self.body,
+                self.hash_type.to_owned(),
+                self.network.to_owned(),
+            )
+            .map_err(AddressError::Earth),
             Scheme::CashAddr => CashAddrCodec::encode(
                 &self.body,
                 self.hash_type.to_owned(),
