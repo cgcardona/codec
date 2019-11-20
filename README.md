@@ -33,7 +33,7 @@ Next install deps and build app
 cargo build
 ```
 
-Create a feature branch off of [stage](https://github.com/cgcardona/codec) and then reate a [Pull Request](https://github.com/cgcardona/codec) to merge your code back in to `stage`.
+Create a feature branch off of [stage](https://github.com/cgcardona/codec/tree/stage) and then reate a [Pull Request](https://github.com/cgcardona/codec/pulls) to merge your code back in to `stage`.
 
 ## Credit
 
