@@ -86,12 +86,12 @@ pub struct Address {
 }
 
 /// Creates an empty `Address` struct, with the `body` bytes the empty vector,
-/// `Scheme::CashAddr`, `HashType::Key`, and `Network::Main`.
+/// `Scheme::Earth`, `HashType::Key`, and `Network::Main`.
 impl Default for Address {
     fn default() -> Self {
         Address {
             body: vec![],
-            scheme: Scheme::CashAddr,
+            scheme: Scheme::Earth,
             hash_type: HashType::Key,
             network: Network::Main,
         }
