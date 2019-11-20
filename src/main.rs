@@ -12,34 +12,18 @@
 mod address;
 mod decode;
 mod encode;
-use address::Address;
+pub use address::{Address, HashType, Network, Scheme};
 use decode::decode;
 use encode::encode;
 
-#[derive(Debug)]
-enum Network {
-    Mainnet,
-    Testnet,
-    Regtest,
-}
-
-#[derive(Debug)]
-enum Scheme {
-    Legacy,
-    CashAddr,
-}
-
-#[derive(Debug)]
-enum HashType {
-    Key,
-    Script,
-}
-
 fn main() {
-    let leg: Scheme = Scheme::Legacy;
-    let a: Address = Address::new("foobar".into());
+    let scheme: Scheme = Scheme::Legacy;
+    let network: Network = Network::Mainnet;
+    let hash_type: HashType = HashType::Key;
 
-    println!("Hello, {:#?}!", a);
+    let address: Address = Address::new(network, scheme, hash_type);
+
+    println!("Hello, {:#?}!", address);
     decode();
     encode();
 }
