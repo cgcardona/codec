@@ -15,6 +15,10 @@
 //! address.encode(raw_address);
 //! ```
 //!
+//! ## Credit
+//!
+//! Inspired by the wonderful [bitcoincash-addr](https://crates.io/crates/bitcoincash-addr)
+//!
 
 mod codec;
 mod decode;

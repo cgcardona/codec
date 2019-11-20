@@ -37,4 +37,4 @@ Create a feature branch off of [stage](https://github.com/cgcardona/codec/tree/s
 
 ## Credit
 
-Inspired by the wonderful [rust-bitcoincash-addr](https://github.com/hlb8122/rust-bitcoincash-addr)
+Inspired by the wonderful [bitcoincash-addr](https://crates.io/crates/bitcoincash-addr)
