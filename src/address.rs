@@ -47,4 +47,12 @@ impl Address {
             hash_type: hash_type,
         }
     }
+
+    pub fn encode(&self, data: Vec<u8>) {
+        println!("ENCODE: {:#?}", data);
+    }
+
+    pub fn decode(&self) {
+        println!("DECODE");
+    }
 }

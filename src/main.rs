@@ -4,8 +4,14 @@
 //!
 //! ```rust
 //! // encode base58check address
-//! use Address::*;
-//!
+//! use address::{Address, HashType, Network, Scheme};
+//! let scheme: Scheme = Scheme::Legacy;
+//! let network: Network = Network::Mainnet;
+//! let hash_type: HashType = HashType::Key;
+//! let address: Address = Address::new(network, scheme, hash_type);
+//! let raw_address: Vec<u8> = gen_vec(48);
+//! println!("Hello, {:#?}!", address);
+//! address.encode(raw_address);
 //! ```
 //!
 
@@ -13,8 +19,6 @@ mod address;
 mod decode;
 mod encode;
 pub use address::{Address, HashType, Network, Scheme};
-use decode::decode;
-use encode::encode;
 
 fn main() {
     let scheme: Scheme = Scheme::Legacy;
@@ -23,7 +27,12 @@ fn main() {
 
     let address: Address = Address::new(network, scheme, hash_type);
 
+    let raw_address: Vec<u8> = gen_vec(48);
+
     println!("Hello, {:#?}!", address);
-    decode();
-    encode();
+    address.encode(raw_address);
+}
+
+fn gen_vec(len: u8) -> Vec<u8> {
+    (0..len).collect()
 }
