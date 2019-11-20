@@ -1,7 +1,9 @@
-//! # Address
+//! # Codec
 //!
-//! Struct and impl for EARTH Addresses
+//! Struct and impl for EARTH Codec
 //!
+
+use crate::from_base58_str;
 
 /// Networks
 #[derive(Debug)]
@@ -17,8 +19,8 @@ pub enum Network {
 /// Schemes
 #[derive(Debug)]
 pub enum Scheme {
-    /// Legacy
-    Legacy,
+    /// Base58Check
+    Base58Check,
     /// CashAddr
     CashAddr,
 }
@@ -33,15 +35,15 @@ pub enum HashType {
 }
 
 #[derive(Debug)]
-pub struct Address {
+pub struct Codec {
     network: Network,
     scheme: Scheme,
     hash_type: HashType,
 }
 
-impl Address {
+impl Codec {
     pub fn new(network: Network, scheme: Scheme, hash_type: HashType) -> Self {
-        Address {
+        Codec {
             network: network,
             scheme: scheme,
             hash_type: hash_type,
@@ -51,8 +53,7 @@ impl Address {
     pub fn encode(&self, data: Vec<u8>) {
         println!("ENCODE: {:#?}", data);
     }
-
-    pub fn decode(&self) {
-        println!("DECODE");
+    pub fn decode(&self, data: String) {
+        from_base58_str(&data);
     }
 }
