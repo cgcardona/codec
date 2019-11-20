@@ -25,13 +25,19 @@
 //!
 
 mod base58;
+mod base58_errors;
 mod cashaddr;
+mod cashaddr_errors;
 mod earth;
+mod earth_errors;
 mod errors;
 
 pub use base58::Base58Codec;
+pub use base58_errors::Base58Error;
 pub use cashaddr::CashAddrCodec;
+pub use cashaddr_errors::CashAddrError;
 pub use earth::EarthCodec;
+pub use earth_errors::EarthError;
 pub use errors::*;
 
 /// Bitcoin Networks
