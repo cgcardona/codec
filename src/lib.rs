@@ -69,6 +69,8 @@ pub enum HashType {
     Key,
     /// Script hash
     Script,
+    /// Account,
+    Account,
 }
 
 /// Struct containing the bytes and metadata of a Bitcoin Cash address.

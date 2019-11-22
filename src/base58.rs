@@ -111,6 +111,10 @@ impl AddressCodec for Base58Codec {
             (HashType::Script, Network::Main) => 0x05,
             (HashType::Script, Network::Test) => 0xc4,
             (HashType::Script, Network::Regtest) => 0xc4,
+            // TODO: update hex values for Account
+            (HashType::Account, Network::Main) => 0x06,
+            (HashType::Account, Network::Test) => 0xc5,
+            (HashType::Account, Network::Regtest) => 0xc5,
         };
 
         let mut body = Vec::with_capacity(raw.len() + 5);

@@ -35,6 +35,7 @@ mod version_byte_flags {
     pub const TYPE_MASK: u8 = 0x78;
     pub const TYPE_P2PKH: u8 = 0x00;
     pub const TYPE_P2SH: u8 = 0x08;
+    pub const TYPE_ACCOUNT: u8 = 0x09;
 
     pub const SIZE_MASK: u8 = 0x07;
     pub const SIZE_160: u8 = 0x00;
@@ -122,6 +123,7 @@ impl AddressCodec for CashAddrCodec {
         let hash_flag = match hash_type {
             HashType::Key => version_byte_flags::TYPE_P2PKH,
             HashType::Script => version_byte_flags::TYPE_P2SH,
+            HashType::Account => version_byte_flags::TYPE_ACCOUNT,
         };
         let length = raw.len();
         let version_byte = match length {
